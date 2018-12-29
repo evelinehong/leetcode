@@ -1,0 +1,203 @@
+#2 28ms 
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        int sum = 0;
+        ListNode result (0), *ptr = &result;
+        while (l1 || l2 || sum){
+          sum += (l1? l1->val : 0) + (l2? l2->val : 0);
+          l1 = l1? l1 -> next : NULL;
+          l2 = l2? l2 -> next : NULL;
+          ptr->next = new ListNode (sum%10);
+          ptr = ptr->next;
+          sum = sum/10;
+        }
+        
+        return result.next;
+    }
+};
+
+
+#3 字符-位置映射 hashmap
+ASCII表共能表示256个字符
+建立一个256位大小的整型数组来代替哈希表（数组可以表示哈希表，因为是字符，字符可以转换成整数也就是ASCII值）
+这样就可以更新每个字符最近出现的位置了
+需要记录左边位置和长度
+s[i]可以表示string中的某一个字符
+如果有重复要定位到上次出现这个字符的地方，就可以知道它的长度
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+      vector <int> map (256, -1);
+      int maxlen = 0, start = -1;
+          for (int i = 0; i < s.length(); i++)
+          {
+              if (map[s[i]] > start){
+                  start = map[s[i]];
+              }
+              map[s[i]] = i;
+              maxlen = max (maxlen, i - start);
+          }
+        return maxlen;
+    }
+};
+
+#5 记录位置就可以，用substr提出来
+遍历每个字符，用Left和right记录位置，然后right++，left--
+和上题一样，要记录左边位置和长度
+如果用i++遍历的话下来8ms（i<s.size())
+如果i<s.size()-maxlen/2的话只用4ms
+i = right + 1 如果有重复的话就把中心位置放到最后一个可以减少遍历重复字符的时间
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int left, right, maxleft = 0;
+        int maxlen = 1;
+        if (s.size() < 2) return s;
+        for (int i = 0; i < s.size() - maxlen/2;){
+            left = right = i;
+            while (right < s.size() - 1 && s[right] == s[right+1]) {
+                right++;
+            }
+            i = right + 1;
+            while (left > 0 && right < s.size() - 1 && s[left-1] == s[right+1]) {
+                right++;
+                left--;
+            }
+            if (right - left + 1 > maxlen) {
+                maxlen = right - left + 1;
+                maxleft = left;
+            }                                                                             
+        }
+        return s.substr(maxleft, maxlen);
+    }
+};
+
+#6 首先想到的是用二维数组，行数等于numrows，列数不固定（可以用vector？）
+vector<string>就是二维数组
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        vector<string> array(numRows,"");
+        string output = "";
+        int k = 0;
+        bool flag = false;
+        if (numRows == 1) return s;
+        for (int i = 0; i < s.size(); i++) {
+            array[k] += s[i];
+            if (k == numRows - 1 || k == 0) flag = !flag;
+            if (flag) k++;
+            else k--;
+        }
+        for (int j = 0; j < numRows; j++) {
+            output += array[j];
+        }
+        return output;
+    }
+};
+如果不考虑numRows=1的情况，就会runtime error
+不用flag，用step的话更快
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        vector<string> array(numRows,"");
+        string output = "";
+        int k = 0;
+        int step = 1;
+        if (numRows == 1) return s;
+        for (int i = 0; i < s.size(); i++) {
+            array[k] += s[i];
+            if (k == numRows - 1) step = -1;
+            if (k == 0) step = 1;
+            k += step;
+        }
+        for (int j = 0; j < numRows; j++) {
+            output += array[j];
+        }
+        return output;
+    }
+};
+
+#7 
+class Solution {
+public:
+    int reverse(int x) {
+        long res = 0;
+        while(x){
+            res = res * 10 + x % 10;
+            x = x / 10;
+        }
+        if (res >= INT_MAX || res <= INT_MIN) return 0;
+        return res;
+        
+    }
+};
+32位机的int是32位的，于是范围是[-2^31, 2^31)也就是[-2147483648, 2147483648)（INT_MAX和INT_MIN)
+- short 至少16位； 
+- int 至少和short一样长； 
+- long 至少32位，且至少和int一样长； 
+- long long 至少64位，且至少和long一样长。  
+
+#8
+class Solution {
+public:
+    int myAtoi(string str) {
+        double output = 0;
+        int sign = 1;
+        bool begin = true;
+        for (int i = 0; i < str.size(); i++){
+            if (str[i] == ' ' && begin == true)  continue; 
+            else if ((str[i] >= 48 && str[i] <= 57) || ((str[i] == '+' || str[i] =='-') && begin)) begin = false;
+            else break;
+            
+            if (str[i] == '-' || str[i] == '+') sign = 44 - str[i];
+            else if (begin == false) output = output * 10 + sign * (str[i] - 48);
+        }
+        output = output >= INT_MAX? INT_MAX : output;
+        output = output <= INT_MIN? INT_MIN : output;
+        return output;
+    }
+};
+恭喜你打败了1%的人！
+优化之后20ms：
+class Solution {
+public:
+    int myAtoi(string str) {
+        double output = 0;
+        int sign = 1;
+        
+        int i = str.find_first_not_of(' ');
+        if (str[i] == '-' || str[i] == '+') sign = 44 - str[i++];
+        while (str[i] >= '0' && str[i] <= '9')  output = output * 10 + str[i++] - '0';
+        output = sign * output;
+        output = output >= INT_MAX? INT_MAX : output;
+        output = output <= INT_MIN? INT_MIN : output;
+        return output;
+    }
+};
+一些trick：
+str.find_first_not_of
+可以在数组里直接写i++ 等于执行完+1
+++i是先+1再执行
+long不行，要用double
+
+#9 很简单啊
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        if (x < 0) return false;
+        int res = 0;
+        int orig = x;
+        while (x){
+            res = res * 10 + x % 10;
+            x = x / 10;
+        }
+        if (res == orig) return true;
+        return false;
+            
+    }
+};
