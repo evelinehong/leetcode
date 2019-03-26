@@ -1,0 +1,152 @@
+#15
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>&nums) {
+        vector<vector<int>> result;
+        for (int fir = 0; fir < nums.size() - 2; fir++) {
+            int sec = fir + 1;
+            int thi = nums.size()-1;
+            while (sec < thi){
+                if (nums[fir] + nums[sec] + nums[thi] == 0 ) {
+                    vector<int> triple;
+                    triple.push_back(nums[fir]);
+                    triple.push_back(nums[sec]);
+                    triple.push_back(nums[thi]);
+                    result.push_back(triple);
+                    sec ++;
+                    thi = nums.size() - 1;
+                }
+                else if (sec + 1 == thi){
+                    sec ++;
+                    thi = nums.size() - 1;
+                }
+                else {
+                    thi --;
+                }
+            }
+         }
+        return result;
+        
+    }
+};
+原先是这样写的；可是并没有考虑相同的三元组；于是想出办法排序
+sort (begin(nums), end(nums));
+并且判断如果fir和上一个一样就直接continue了；sec也是一样
+
+特殊：当然还要加上限值数组大小的条件，必须大于等于3
+
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>&nums) {
+        sort (begin(nums), end(nums));
+        vector<vector<int>> result;
+        if (nums.size() < 3) return result;
+        for (int fir = 0; fir < nums.size() - 2; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            int sec = fir + 1;
+            int thi = nums.size()-1;
+            while (sec < thi){
+                if (nums[fir] + nums[sec] + nums[thi] == 0 ) {
+                    vector<int> triple;
+                    result.push_back({nums[fir], nums[sec], nums[thi]});
+                    sec ++;
+                    thi = nums.size() - 1;
+                    while (nums[sec] == nums[sec-1] && sec < thi) sec++;
+                }
+                else if (sec + 1 == thi){
+                    sec ++;
+                    thi = nums.size() - 1;
+                    while (nums[sec] == nums[sec-1] && sec < thi) sec++;
+                }
+                else {
+                    thi --;
+                }
+            }
+         }
+        return result;
+        
+    }
+};
+
+简化：因为我们已经排好了序，所以如果比0大的话thi往左，比-0小的话sec往右；
+同时我们如果已经找到=0的话，也要sec++ thi--，和判断和位置变之前的元素是否相同；所以我们判断的时候用>=0, <=0，这样就不用在=0那里再写一遍了
+
+最终简化结果：
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>&nums) {
+        sort (begin(nums), end(nums));
+        vector<vector<int>> result;
+        if (nums.size() < 3) return result;
+        for (int fir = 0; fir < nums.size() - 2; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            int sec = fir + 1;
+            int thi = nums.size()-1;
+            while (sec < thi){
+                int sum = nums[fir] + nums[sec] + nums[thi];
+                if (sum == 0 ) {
+                    vector<int> triple;
+                    result.push_back({nums[fir], nums[sec], nums[thi]});
+                }
+                if (sum <= 0){
+                    sec ++;
+                    while (nums[sec] == nums[sec-1] && sec < thi) sec++;
+                }
+                if (sum >= 0){
+                    thi --;
+                    while (nums[thi] == nums[thi+1] && sec < thi) thi--;
+                }
+            }
+         }
+        return result;
+        
+    }
+};
+
+但也只打败了46%的人
+看别人的代码，不是每次都fir, sec, thi
+而是算一个target = -fir
+只要比较sec和thi的和是不是target就可以了。
+会不会更快呢？
+有的！大于80%的人了！
+附代码
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>&nums) {
+        sort (begin(nums), end(nums));
+        vector<vector<int>> result;
+        if (nums.size() < 3) return result;
+        for (int fir = 0; fir < nums.size() - 2; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            int target = -nums[fir];
+            int sec = fir + 1;
+            int thi = nums.size()-1;
+            while (sec < thi){
+                int sum = nums[sec] + nums[thi];
+                if (sum ==  target) {
+                    vector<int> triple;
+                    result.push_back({nums[fir], nums[sec], nums[thi]});
+                }
+                if (sum <= target){
+                    sec ++;
+                    while (nums[sec] == nums[sec-1] && sec < thi) sec++;
+                }
+                if (sum >= target){
+                    thi --;
+                    while (nums[thi] == nums[thi+1] && sec < thi) thi--;
+                }
+            }
+         }
+        return result;
+        
+    }
+};
+
+
+
