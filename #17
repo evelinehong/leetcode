@@ -1,0 +1,30 @@
+#17
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> map = {"0","1","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+        if(digits.empty()) return vector<string>();
+        vector<string> result;
+        result.push_back("");
+        for (int i = 0; i < digits.length(); i++){
+            string chars = map[digits[i]-'0'];
+            vector<string> tmp; 
+            for (int j = 0; j < chars.length(); j++){
+                for (int k = 0; k < result.size(); k++){
+                    tmp.push_back(result[k] + chars[j]);
+                }
+            }
+            result = tmp;
+        }
+        return result;
+    }
+};
+
+这题首先想到的，是用一个map。但是我们是数字，就用vector来表示。注意vector = 后面是{}不是[]
+思路是每到一个新的数字，把新的char排列组合存到之前的char里，更新result。
+因此我们要初始化result，push_back一个空字符。
+但如果输入是""输出的是空数组，所以我们要if(digits.empty()) return vector<string>()。
+另外，字符转数字可以直接用-'0'（而不是-"0"）
+字符用length，vector用size
