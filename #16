@@ -1,0 +1,75 @@
+#16
+第一遍试
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        sort (begin(nums), end(nums));
+        int minimum = INT_MAX;
+        int result;
+        for (int fir = 0; fir < nums.size() - 2; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            int sec = fir + 1;
+            int thi = nums.size()-1;
+            while (sec < thi){
+                int sum = nums[sec] + nums[thi] + nums[fir];
+                if ( abs(sum - target) < minimum) {
+                    result = sum;
+                    minimum = abs(sum - target);
+                }
+                if (sum <= target){
+                    sec ++;
+                    while (nums[sec] == nums[sec-1] && sec < thi) sec++;
+                }
+                else {
+                    thi --;
+                    while (nums[thi] == nums[thi+1] && sec < thi) thi--;
+                }
+            }
+         }
+        return result;
+        
+    }
+};
+
+
+ 8 ms, faster than 86.86% of C++ online submissions for 3Sum Closest.
+
+
+看了下discussion。还可以提升的方法：如果sum=target就直接return了可以节约很多时间。 
+加上 if (sum == target) return sum;
+
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        sort (begin(nums), end(nums));
+        int minimum = INT_MAX;
+        int result;
+        for (int fir = 0; fir < nums.size() - 2; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            int sec = fir + 1;
+            int thi = nums.size()-1;
+            while (sec < thi){
+                int sum = nums[sec] + nums[thi] + nums[fir];
+                if (sum == target) return sum;
+                if ( abs(sum - target) < minimum) {
+                    result = sum;
+                    minimum = abs(sum - target);
+                }
+                if (sum <= target){
+                    sec ++;
+                    while (nums[sec] == nums[sec-1] && sec < thi) sec++;
+                }
+                else {
+                    thi --;
+                    while (nums[thi] == nums[thi+1] && sec < thi) thi--;
+                }
+            }
+         }
+        return result;
+        
+    }
+};
