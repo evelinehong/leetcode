@@ -1,0 +1,85 @@
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort (begin(nums), end(nums));
+        vector<vector<int>> result;
+        if (nums.size() < 4) return result;
+        for (int fir = 0; fir < nums.size() - 3; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            if (nums[fir] + nums[fir+1] + nums[fir+2] + nums[fir+3] > target) break;
+            if (nums[fir] + nums[nums.size() - 3] + nums[nums.size() - 2] + nums[nums.size() - 1 <target) continue;
+            for (int sec = fir + 1; sec < nums.size() - 2; sec++){
+                if (sec > fir + 1 && nums[sec] == nums[sec-1]) continue;
+                int thi = sec + 1;
+                int four = nums.size()-1;
+                while (thi < four){
+                    int sum = nums[fir] + nums[sec] + nums[thi] + nums[four];
+                    if (sum ==  target) {
+                        vector<int> triple;
+                        result.push_back({nums[fir], nums[sec], nums[thi], nums[four]});
+                    }
+                    if (sum <= target){
+                        thi ++;
+                        while (nums[thi] == nums[thi-1] && thi < four) thi++;
+                    }
+                    if (sum >= target){
+                        four --;
+                        while (nums[four] == nums[four+1] && thi < four) four--;
+                    }
+                }
+            }
+
+         }
+        return result;
+    }
+};
+
+看discussion改了一版，快了很多
+就是加上if (nums[fir] + nums[fir+1] + nums[fir+2] + nums[fir+3] > target) break;
+            if (nums[fir] + nums[nums.size() - 3] + nums[nums.size() - 2] + nums[nums.size() - 1]<target) continue;
+和f (nums[fir] + nums[sec] + nums[fir+2] + nums[fir+3] > target) break;
+                if (nums[fir] + nums[sec] + nums[nums.size() - 2] + nums[nums.size() - 1] <target) continu
+
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        sort (begin(nums), end(nums));
+        vector<vector<int>> result;
+        if (nums.size() < 4) return result;
+        for (int fir = 0; fir < nums.size() - 3; fir++) {
+            if (fir > 0 && nums[fir] == nums[fir-1]) continue;
+            if (nums[fir] + nums[fir+1] + nums[fir+2] + nums[fir+3] > target) break;
+            if (nums[fir] + nums[nums.size() - 3] + nums[nums.size() - 2] + nums[nums.size() - 1]<target) continue;
+            for (int sec = fir + 1; sec < nums.size() - 2; sec++){
+                if (sec > fir + 1 && nums[sec] == nums[sec-1]) continue;
+                if (nums[fir] + nums[sec] + nums[fir+2] + nums[fir+3] > target) break;
+                if (nums[fir] + nums[sec] + nums[nums.size() - 2] + nums[nums.size() - 1] <target) continue;
+                int thi = sec + 1;
+                int four = nums.size()-1;
+                while (thi < four){
+                    int sum = nums[fir] + nums[sec] + nums[thi] + nums[four];
+                    if (sum ==  target) {
+                        vector<int> triple;
+                        result.push_back({nums[fir], nums[sec], nums[thi], nums[four]});
+                    }
+                    if (sum <= target){
+                        thi ++;
+                        while (nums[thi] == nums[thi-1] && thi < four) thi++;
+                    }
+                    if (sum >= target){
+                        four --;
+                        while (nums[four] == nums[four+1] && thi < four) four--;
+                    }
+                }
+            }
+
+         }
+        return result;
+    }
+};v
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
