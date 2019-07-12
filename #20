@@ -1,0 +1,52 @@
+#20
+这题用栈做还是比较容易的；
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> mystack;
+        for (int i = 0; i < s.length(); i++){
+            if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
+                mystack.push(s[i]);
+            }
+            
+            if (s[i] == ')') {
+                if ((!mystack.empty()) && mystack.top() == '(') mystack.pop();
+                else return false;
+            }
+            if (s[i] == ']') {
+                if ((!mystack.empty()) && mystack.top() == '[') mystack.pop();
+                else return false;
+            }
+            if (s[i] == '}') {
+                if ((!mystack.empty()) && mystack.top() == '{') mystack.pop();
+                else return false;
+            }
+        }
+        if (mystack.empty()) return true;
+        else return false;
+    }
+};
+
+看了discussion，有一些简化代码的方法；
+1. 用for (char& c : s)来遍历字符串。至于为什么要&，https://blog.csdn.net/edjoker2/article/details/79383536上有。
+2. 用switch，因为对每种情况都判断。switch语法记一下，如果连续几个的处理一样的话，:后面不用跟东西。要break和default
+3.最后return mystack.empty()就可以了
+
+最后代码如下，虽然并没有快
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> mystack;
+        for (char &c: s){
+            switch (c){
+                case ('('):
+                case ('['):
+                case ('{'):mystack.push(c);break;
+                case (')'):if ((!mystack.empty()) && mystack.top() == '(') mystack.pop();else return false;break;
+                case (']'):if ((!mystack.empty()) && mystack.top() == '[') mystack.pop();else return false;break;
+                case ('}'):if ((!mystack.empty()) && mystack.top() == '{') mystack.pop();else return false;break;
+            }            
+        }
+        return mystack.empty();
+    }
+};
