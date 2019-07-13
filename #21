@@ -1,0 +1,119 @@
+#21
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode result(0);
+        ListNode* ptr = &result;
+        while (l1 && l2){
+            if (l1->val <= l2->val){
+                ptr->next = new ListNode(l1->val);
+                l1 = l1->next;
+            }
+            else{        
+                ptr->next = new ListNode(l2->val);
+                l2 = l2->next;
+            }
+            ptr = ptr->next;
+        }
+        while (l1){
+            ptr->next = new ListNode(l1->val);
+            l1 = l1->next;
+            ptr = ptr->next;
+        } 
+        while (l2){
+            ptr->next = new ListNode(l2->val);
+            l2 = l2->next;
+            ptr = ptr->next;
+        }
+        return result.next;
+        
+    }
+};
+
+几点需要注意的
+新链表初始化方式：ListNode result(0);
+        ListNode* ptr = &result;
+        参见第二题
+        最后return result.next
+每当给ptr->next赋完值都要ptr=ptr->next
+
+
+改动第二版。因为直接取l1、l2就可，不用取里面的值。
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode result(0);
+        ListNode* ptr = &result;
+        while (l1 && l2){
+            if (l1->val <= l2->val){
+                ptr->next = l1;
+                l1 = l1->next;
+            }
+            else{        
+                ptr->next = l2;
+                l2 = l2->next;
+            }
+            ptr = ptr->next;
+        }
+        while (l1){
+            ptr->next = l1;
+            l1 = l1->next;
+            ptr = ptr->next;
+        } 
+        while (l2){
+            ptr->next = l2;
+            l2 = l2->next;
+            ptr = ptr->next;
+        }
+        return result.next;
+        
+    }
+};
+更简洁的方法。因为直接就接到另一个链表所有剩下的元素中，直接接了。
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        ListNode result(0);
+        ListNode* ptr = &result;
+        while (l1 && l2){
+            if (l1->val <= l2->val){
+                ptr->next = l1;
+                l1 = l1->next;
+            }
+            else{        
+                ptr->next = l2;
+                l2 = l2->next;
+            }
+            ptr = ptr->next;
+        }
+        ptr->next = l1? l1: l2;
+        return result.next;
+        
+    }
+};
+
+
