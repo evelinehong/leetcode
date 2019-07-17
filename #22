@@ -1,0 +1,23 @@
+#22 这题思路比较简单，记下来就可以了
+递归）的时候m-1，(的时候m+1, n-1
+
+注意
+#1 指针引用作参数不用返回。直接就修改参数了。参数引用比指针好
+--m和m-1是一样的，先-再进去，m--是进去之后返回减，不可以写m--
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        addparen(res, "", 0, n);
+        return res;
+    }
+    void addparen(vector<string>& res, string str, int m, int n){
+        if (n == 0 && m == 0){
+            res.push_back(str);
+            return;
+        }
+    
+        if (m > 0) addparen (res, str + ")", --m, n);
+        if (n > 0) addparen (res, str + "(", ++m, --n);
+    }
+};
