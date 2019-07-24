@@ -1,0 +1,32 @@
+#31
+这题有点绕…
+从最后一个数往前，如果左边比右边都大，说明右边不能再变大了，所以左移。
+如果左边比右边小，说明这个数从这里截断，后面子序列可以向上爬一次。
+所以我们记住截断的节点k。
+后面的子序列向上爬的方式是我们找到一个替换k这里节点的节点，也就是比k大一层的节点。这个很容易，因为右边是降序的，所以从右往左找到第一个比nums[k]大的数就是替换的数。
+所以我们把这个数nums[i]和nums[k]替换。
+这时候右边还是严格降序的。但因为我们k的地方升了，我们希望后面的是升序的方式，所以我们对后面做一个reverse。
+
+几个需要注意的细节，
+k--是在循环最后-
+reverse(nums.begin()+...,nums.end())
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int k;
+        for (k = nums.size() - 2; k >= 0 ; k--){
+            if (nums[k+1] > nums[k]) break;
+        }
+        if (k < 0){
+            reverse (nums.begin(), nums.end());
+        }
+        else {
+            for (int i = nums.size() - 1; i >= k; i--){
+                if (nums[i] > nums[k]) {swap (nums[i] , nums[k]);break;}
+            }
+            reverse (nums.begin()+k+1,nums.end());
+
+        }
+    } 
+};
