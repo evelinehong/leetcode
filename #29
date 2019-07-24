@@ -1,0 +1,22 @@
+#29
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        long long longdividend = labs(dividend), longdivisor = labs(divisor), n = 0;
+        int sign = (dividend > 0) ^ (divisor > 0) ? -1: 1;
+
+        while (longdividend >= longdivisor){
+            longdividend = longdividend - longdivisor;
+            n++;          
+        }
+        
+        n = sign * n;
+        if (n > INT_MAX || n < INT_MIN) return INT_MAX;
+        return int(n);
+    }
+};
+原来是这样写的。
+注意！在题目涉及到要你判断INT_MAX和INT_MIN的时候，要用到long，甚至long long都可以。这样才不会溢出。而且负的变成正的（绝对值labs）
+但是即便这样写还是time limit exceeded。
+看了下discussion，要用到位比特计算会快很多。
+具体就是被除数一直*2，然后我们的结果马上+2/+4...
