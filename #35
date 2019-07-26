@@ -1,0 +1,17 @@
+#35
+思路和上题一样
+=的时候往左移一个，<的时候也往左移一个。之后再往右，就到了
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int n = nums.size();
+        int left = 0, right = n - 1;
+        int mid;
+        while (left <= right) {
+            mid = (left + right) / 2;
+            if (target <= nums[mid]) right = mid - 1;
+            else left = mid + 1;
+        }
+        return left;
+    }
+};
