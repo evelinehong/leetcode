@@ -1,0 +1,103 @@
+#33 
+思路：logn二分查找。
+首先通过二分查找找到rotate的地方（最小值）也就是edge。
+然后通过二分查找找到那个数。
+最开始是这样写的。
+
+我想的是，如果能找到rotate之后真正的rotate回来就可以了。然而不可以sort的（时间复杂度nlogn）
+所以我们假设后面又循环了一遍该数组，然后以edge的地方（最小值）为left，以edge+n-1（最大值）设为right。找到mid。并且%nums.size()的结果作为realmid也就是在数组中存在的那个中位数。
+最开始是这样写的。
+后半部分就是很传统的二分查找。
+注意几点【易错的点】：while <=。 right = mid - 1; left = mid + 1.
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int left = 0, right = n - 1;
+        int mid;
+        while (left < right){
+            mid = (left + right) / 2;
+            if (nums[mid] > nums[right]) left = mid + 1;
+            else right = mid - 1;
+        }
+        int edge = left;
+        left = edge;
+        right = edge + n - 1;
+        int realmid;
+        while (left <= right){
+            mid = (left + right) / 2 ;
+            realmid = mid % n;
+            if (nums[realmid] > target) right = mid - 1;
+            else if (nums[realmid] < target) left = mid + 1;
+            else return realmid;
+        }
+        return -1;
+    }
+};
+没通过。发现是else right = mid - 1地方错了。（mid - 1和mid + 1对应left<=right ；其中一个是mid - 只比较不找出 - 是left < right）
+我们再来分析一下前半部分。前半部分是如果mid的值大于最右值，则rotate发生在右边（left = mid + 1）。小于最右值则rotate发生在左边或者发生在它自己身上！所以这时候right = mid - 1就直接把它自己给pass掉了。
+再来看看我们为什么不left <= right
+因为我们最后收敛是left = right = edge，如果left <= right的话left = right那里会死循环。如果left就是我们要找的rotate地方，那么right = mid会一直缩到和left一样的地方；反之同理。
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int left = 0, right = n - 1;
+        int mid;
+        while (left < right){
+            mid = (left + right) / 2;
+            if (nums[mid] > nums[right]) left = mid + 1;
+            else right = mid;
+        }
+        int edge = left;
+        left = edge;
+        right = edge + n - 1;
+        int realmid;
+        while (left <= right){
+            mid = (left + right) / 2 ;
+            realmid = mid % n;
+            if (nums[realmid] > target) right = mid - 1;
+            else if (nums[realmid] < target) left = mid + 1;
+            else return realmid;
+        }
+        return -1;
+    }
+};
+
+解法二 无穷解法
+我们假设target在段1的时候，段2为INF；target在段2的时候，段1为-INF；
+如果target和mid在同一端（和队首或队尾比较）那么mid保留原值。否则mid为INF或-INF（因为它在另一段，而我们其实在二分的时候仅关心mid的值）
+如果不在同一端，如果target>段首则mid为INF；否则mid为-INF
+然而这种方法有些特殊情况过不了，就没再试了。注释掉的是应对没有rotate的情况的。
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int n = nums.size();
+        int left = 0, right = n - 1;
+        int mid;
+        // if (nums[0] < nums[n - 1]){
+        //     while (left <= right) {
+        //         mid = (left + right) / 2;
+        //         if (target < nums[mid]) right = mid - 1;
+        //         else if (target > nums[mid]) left = mid + 1;
+        //         else return mid;
+        //     }
+        // }
+        // left = 0;
+        // right = n - 1;
+        while (left <= right){
+            mid = (left + right) / 2;
+            int num = nums[mid];
+            if (nums[mid] > nums[0] == target > nums[0]) num = nums[mid];
+            else num = target > nums[0] ? INT_MAX: INT_MIN;
+            
+            if (target < num) right = mid - 1;
+            else if (target > num) left = mid + 1;
+            else return mid;
+        }
+        return -1;
+    }
+};
+
+解法三 劈开之后至少一般是有序的。如果target在里面就不丢弃否则就丢弃。
