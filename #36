@@ -1,0 +1,22 @@
+#36
+思路就是有三种容器（行列块），遍历一遍，如果是数字，看第i/j/k个那个容器有没有那个数字，没有的话就放进去，有的话说明是个错误的。
+原来想用hashset的。但是C++对hashset非常不友好。
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        int row[9][9] = {0}, column[9][9] = {0}, block[9][9] = {0};
+        for (int i = 0; i < 9; i++){
+            for (int j = 0; j < 9; j++){
+                int k = i/3*3 + j/3;
+                char number = board[i][j];
+                if (number != '.'){
+                    int num = number - '0' - 1;
+                    if (row[i][num] ==1 || column[j][num] == 1 || block[k][num] == 1) return false;
+                    else row[i][num] = column[j][num] = block[k][num] = 1;
+                }
+                
+            }
+        }
+        return true;
+    }
+};
