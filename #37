@@ -1,0 +1,82 @@
+#37
+class Solution {
+public:
+    bool check (vector<vector<char>>& board, int i, int j, int num){
+        for (int k = 0; k < 9; k++) {
+            if (board[i][k] == num || board[k][j] == num) return false;
+        }
+        for (int k = 0; k < 3; k++){
+            for (int l = 0; l < 3; l++){
+                if (board[i/3*3+ k][j/3*3 + l] == num) return false;
+            }
+        }
+        return true;
+    }
+    bool solveonce (vector<vector<char>>& board, int i, int j) {
+        if (i == 9) return true;
+        if (board[i][j] != '.') return solveonce(board, i + (j+1)/9, (j+1) % 9);
+        
+        for (char c = '1'; c <= '9'; c++){
+            bool flag = check (board, i, j, c);
+            if (flag) {
+                board[i][j] = c;
+                if (solveonce(board, i + (j+1)/9, (j+1) % 9)) return true;
+                board[i][j] = '.';                
+            }
+        }
+        return false;
+    }
+    
+    void solveSudoku(vector<vector<char>>& board) {
+       solveonce (board, 0, 0);
+    }
+};
+
+这里的check部分是看了discussion用这种方法。但我觉得check那里（调用时有好多层循环）耗时太久了。过了之后换了另一种方法（也就是36题的方法）。这样只在初始化的时候循环了一下。果然快了。
+
+class Solution {
+public:
+    int row[9][9] = {0}, column[9][9] = {0}, block[9][9] = {0};
+    bool check (vector<vector<char>>& board, int i, int j, int num){
+        int k = i/3*3 + j/3;
+        if (row[i][num] ==1 || column[j][num] == 1 || block[k][num] == 1) return false;
+                    
+        return true;
+    }
+    bool solveonce (vector<vector<char>>& board, int i, int j) {
+        if (i == 9) return true;
+        if (board[i][j] != '.') return solveonce(board, i + (j+1)/9, (j+1) % 9);
+        int k = i/3*3 + j/3;
+        for (char c = '1'; c <= '9'; c++){
+            int num = c - '0' - 1;
+            bool flag = check (board, i, j, num);
+            if (flag) {
+                board[i][j] = c;
+                row[i][num] = column[j][num] = block[k][num] = 1;
+                if (solveonce(board, i + (j+1)/9, (j+1) % 9)) return true;
+                board[i][j] = '.';
+                row[i][num] = column[j][num] = block[k][num] = 0;
+            }
+            
+        }
+        return false;
+    }
+    
+    void solveSudoku(vector<vector<char>>& board) {
+        for (int i = 0; i < 9; i++){
+            for (int j = 0; j < 9; j++){
+                int k = i/3*3 + j/3;
+                char number = board[i][j];
+                if (number != '.'){
+                    int num = number - '0' - 1;
+                    row[i][num] = column[j][num] = block[k][num] = 1;
+                }                
+            }
+        }
+        
+       solveonce (board, 0, 0);
+    }
+};
+
+注意下在前面一个代码中，board[i][j] = '.';可以再if (flag)的里面或者外面。
+但是在后一个代码中row[i][num] = column[j][num] = block[k][num] = 0;不可以放在外层。因为这里检测前面已经有了不可以再加，结果把前面的也复原成0了。
