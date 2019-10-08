@@ -1,0 +1,26 @@
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int sum = 0, answer = nums[0];
+        for (int i = 0; i < nums.size(); i++){
+            sum = max (sum, 0);
+            sum += nums[i];
+            answer = max (answer, sum);
+        }
+        
+        return answer;
+    }
+};
+
+DP问题 
+
+用一个一维数组 dp [ i ] 表示以下标 i 结尾的子数组的元素的最大的和，也就是这个子数组最后一个元素是下边为 i 的元素，并且这个子数组是所有以 i 结尾的子数组中，和最大的。
+
+这样的话就有两种情况，
+
+如果 dp [ i - 1 ] < 0，那么 dp [ i ] = nums [ i ]。
+如果 dp [ i - 1 ] >= 0，那么 dp [ i ] = dp [ i - 1 ] + nums [ i ]。
+
+我的code里不用一维数组。直接比较之前的（sum）和0的大小， 决定接下来的sum。再取sum最大作为answer。

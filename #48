@@ -1,0 +1,86 @@
+/*
+ * clockwise rotate
+ * first reverse up to down, then swap the symmetry 
+ * 1 2 3     7 8 9     7 4 1
+ * 4 5 6  => 4 5 6  => 8 5 2
+ * 7 8 9     1 2 3     9 6 3
+*/
+my code:
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int size = matrix.size();
+        
+        for (int i = 0; i <= (size-2)/2; i++){
+            matrix[i].swap(matrix[size-1-i]);
+        }
+        
+        for (int i = 0; i < size; i++){
+            for (int j = i + 1; j < size; j++){
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+};
+
+
+
+Using swap to reverse matrix. This is swap of two vectors. We use v1.swap(v2)
+
+We also can use swap(x1,x2) where x is a single variable. 
+
+Discussion code:
+
+void rotate(vector<vector<int> > &matrix) {
+    reverse(matrix.begin(), matrix.end());
+    for (int i = 0; i < matrix.size(); ++i) {
+        for (int j = i + 1; j < matrix[i].size(); ++j)
+            swap(matrix[i][j], matrix[j][i]);
+    }
+}
+
+1.reverse(myvector.begin(),myvector.end()); 
+
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int size = matrix.size();
+        reverse (matrix.begin(), matrix.end());
+        // for (int i = 0; i <= (size-2)/2; i++){
+        //     matrix[i].swap(matrix[size-1-i]);
+        // }
+        
+        for (int i = 0; i < size; i++){
+            for (int j = i + 1; j < size; j++){
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+};
+
+2. swap any two elements of matrix
+
+And so the code can be simplified to:
+
+static int x = [](){ios::sync_with_stdio(false); cin.tie(nullptr); return 0; }();
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int size = matrix.size();
+        reverse (matrix.begin(), matrix.end());
+        
+        for (int i = 0; i < size; i++){
+            for (int j = i + 1; j < size; j++){
+                swap (matrix[i][j],matrix[j][i]);
+            }
+        }
+    }
+};
+
+Actually beats 100%

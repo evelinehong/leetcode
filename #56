@@ -1,0 +1,25 @@
+#56
+
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) { 
+        vector<vector<int>> result;
+        if(intervals.size() == 0) return result;
+        sort (intervals.begin(), intervals.end(), [](vector<int>& a, vector<int>& b){return a[0]<b[0];});
+        result.push_back(intervals[0]);
+        for (int i = 1; i < intervals.size(); i++){
+            if (result.back()[1] < intervals[i][0]){
+                result.push_back(intervals[i]);
+            }
+            else if (result.back()[1] < intervals[i][1]){
+                result.back()[1] = intervals[i][1]; 
+            }
+        }
+        return result;
+        
+    }
+};
+
+sort第三个参数compare，参照https://blog.csdn.net/qq_30587589/article/details/84098333
+
+[]是lambda参照这个：https://www.cnblogs.com/san-fu-su/p/5733058.html

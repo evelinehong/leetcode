@@ -1,0 +1,38 @@
+0ms again
+
+1. when you see -2^31 and 2^31-1. Please think about long long immediately!
+
+However, the inverse of -2^31, can be tricky. You can think of this as a special case.
+
+The key to this problem is to use bit manipulation. x square, at the same time p/2.
+
+However, when p is single, /2 neglects multiplying x once. So we compare p & 1, which means compare p & 0000000001.
+
+If it is single, we multiply x once.
+
+class Solution {
+public:
+    double myPow(double x, int n) {
+        double answer = 1;
+        unsigned long long p = n;
+        if (n < 0) {
+            if (n == -2147483648) p = 2147483648;
+            else {
+                p = -n;
+            }
+            x = 1/x;
+            
+        }
+        while (p){
+            if (p & 1) {
+            answer = answer * x;
+            }
+        
+            x = x*x;
+            p >>= 1;
+            
+        }
+        
+        return answer;
+    }
+};

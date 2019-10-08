@@ -1,0 +1,50 @@
+#54
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> answer;
+        int i = 0, j = -1;
+        
+        vector<vector<int>> directions = {{0,1}, {1,0}, {0,-1}, {-1,0}};
+        
+        int column = matrix.size();
+        if (column == 0) return answer;
+        int row = matrix[0].size();
+        if (row == 0) return answer;
+        
+        vector<int> steps = {row, column-1};
+        
+        int idirection = 0;
+        int istep = 0;
+        
+        while (steps[istep]){
+            for (int k = 0; k < steps[istep]; k++){
+                i = i + directions[idirection][0];
+                j = j + directions[idirection][1];
+                int number = matrix[i][j];
+                answer.push_back(number);
+            }
+            steps[istep] -= 1;
+            istep = (istep+1) % 2;
+            idirection = (idirection+1) % 4;
+        }
+        
+        return answer;
+    }
+};
+
+0 1 2 3 4 5
+6 7 8 9 10
+11 12 13 14 15
+
+Imagine a cursor starts off at (0, -1), i.e. the position at '0', then we can achieve the spiral order by doing the following:
+
+Go right 5 times
+Go down 2 times
+Go left 4 times
+Go up 1 times.
+Go right 3 times
+Go down 0 times -> quit
+
+idirection corresponds to direction
+istep corresponds to row/volumn steps
